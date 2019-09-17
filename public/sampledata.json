@@ -1,0 +1,66 @@
+{
+    "tw_messages": [
+      {
+        "twid": "1",
+        "location_words": "OMR Perungudi, near Apollo hospital",
+        "img_video_url": "https://twitter.com/bhaskarl3101/status/926171023128461312",
+        "tw_msg": "This is original video taken by me. 13 secs.. At OMR Perungudi, near Apollo hospital.. #ChennaiRains #ChennaiFloodTrap",
+        "date": "2018-12-01",
+        "lat": "12.963343",
+        "lng": "80.245769",
+        "tw_source": "https://twitter.com/bhaskarl3101/status/926171023128461312",
+        "col": "posted",
+        "status":"0.4"
+  
+      },
+      {
+        "twid": "2",
+        "location_words": "Elcot IT park, Sholinganallur",
+        "img_video_url": "https://pbs.twimg.com/media/DNorlBBVQAA7O3l.jpg",
+        "tw_msg": "View from Elcot IT park, Sholinganallur. #ChennaiRain #ChennaiRains2017 Picture : Krishnakumar.",
+        "date": "2018-12-01",
+        "lat": "12.915432",
+        "lng": "80.219562",
+        "tw_source": "https://twitter.com/vk_aarun/status/926100603293405184",
+        "col": "verified",
+        "status":"0.8"
+      },
+      {
+        "twid": "3",
+        "location_words": "marina beach",
+        "img_video_url": "https://pbs.twimg.com/media/DNsZLjOV4AAWPOK.jpg",
+        "tw_msg": "Merina scene now. Ppl r really njoying",
+        "date": "2018-12-01",
+        "lat": "13.051248",
+        "lng": "80.284240",
+        "tw_source": "https://twitter.com/vk_aarun/status/926362015777529856%u2019",
+        "col": "posted",
+        "status":"0.2"
+      },
+      {
+        "twid": "4",
+        "location_words": "avadi",
+        "img_video_url": "https://twitter.com/shivashan87/status/926385211532763137",
+        "tw_msg": "#ChennaiRains2017 Please be careful guys in Avadi. Spread the emergency news. Many need food and water",
+        "date": "2018-12-01",
+        "lat": "13.106745",
+        "lng": "80.096951",
+        "tw_source": "https://twitter.com/vk_aarun/status/92638521153276313",
+        "col": "verified",
+        "status":"0.1"
+      },
+      {
+        "twid": "5",
+        "location_words": "T.Nagar, duraisamy subway",
+        "img_video_url": "https://twitter.com/shivashan87/status/926356423113564161",
+        "tw_msg": "#ChennaiRains2017 T nagar, Duraisamy Subway is clear to travel.Avoid rumors.they need medicines",
+        "date": "2018-12-01",
+        "lat": "13.041269",
+        "lng": "80.228701",
+        "tw_source": "https://twitter.com/vk_aarun/status/926356423113564161",
+        "col": "posted",
+        "status":"0.3"
+      }
+    ]
+  }
+  

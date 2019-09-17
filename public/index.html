@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta charset="utf-8">
+  <title>Marker Clustering</title>
+  <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
+  </script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/12.0.0/nouislider.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+  <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+
+    #map {
+      height: 90vh;
+    }
+    /* Optional: Makes the sample page fill the window. */
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0px;
+      right: -400px;
+      height: 100%;
+      width: 400px;
+      padding: 24px;
+      padding-top: 64px;
+      overflow: auto;
+      background: #eeeeee;
+    }
+
+    .lowest {
+      box-shadow: #888888 0px 0px 10px 0px;
+      right: 0px;
+    }
+
+    .card {
+      width: -webkit-fill-available;
+      padding: 12px;
+      min-height: 86px;
+      margin-top: 16px;
+      border-style: solid;
+      border-width: 0px;
+      border-right-width: 4px;
+      font-size: 12px;
+    }
+
+    .material-icons {
+      font-size: 24px;
+      vertical-align: middle;
+    }
+
+    .blue-card {
+      border-color: #89cff0
+    }
+
+    .pink-card {
+      border-color: #ffb6c1
+    }
+
+    .tweet-img{
+      max-width: 360px;
+      box-shadow: #888888 0px 0px 7px 0px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="navbar-fixed">
+    <nav>
+      <div class="nav-wrapper" style="margin-left:64px; margin-right:64px;">
+        <a href="#!" class="brand-logo" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size:24px">Crypers (Risk Map)</a>
+      </div>
+  </div>
+
+  </nav>
+  <div id="map" style="margin-right:400px;"></div>
+  <div id="tweets" class="sidebar lowest" style="color:#444444">
+    <div id="tweets-container">
+      <h5>Tweets</h5>
+      <div id="test-slider"></div><br>
+      <a class="waves-effect waves-light btn" onclick="initMap();">APPLY</a>
+
+      <div id="cards-holder">
+      </div>
+    </div>
+  </div>
+  <div id="one-tweet" class="sidebar" style="color:#444444">
+    <h5>
+      <a class="waves-effect btn-flat" onclick="showAllTweets();">
+          <i class="material-icons">arrow_back</i>
+        </a> &nbspDetails
+    </h5>
+
+    <center>
+
+    <br>
+
+        <img class="tweet-img" id="image">
+    <p id="tweet-date"></p>
+      <i style="font-size:18px;"><p id="tweet-msg"></p></i>
+
+  </center>
+
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/12.0.0/nouislider.js"></script>
+  <script>
+    var tweets = {};
+
+    $.ajax({
+      url: "/data",
+      success: function (data) {
+        tweets = data.tw_messages;
+        initMap();
+
+      }
+    })
+
+    var slider = document.getElementById('test-slider');
+    noUiSlider.create(slider, {
+      start: [20, 80],
+      connect: true,
+      step: 1,
+      orientation: 'horizontal', // 'horizontal' or 'vertical'
+      range: {
+        'min': 0,
+        'max': 100
+      },
+    });
+
+    var markers, map;
+
+    function initMap() {
+
+      if(!tweets) return;
+
+      document.getElementById('cards-holder').innerHTML = "";
+
+      tweets = tweets.sort((a,b) => parseFloat(a.status) < parseFloat(b.status));
+
+
+      map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 10,
+        center: { lat: 13.0827, lng: 80.2707 }
+      });
+
+      markers = tweets.map((tweet, i) => {
+
+        var gt = parseFloat(slider.noUiSlider.get()[0])/100;
+        var lt = parseFloat(slider.noUiSlider.get()[1])/100;
+
+        var av = parseFloat(tweet.status);
+        if (av > lt || av < gt) return;
+
+        cardbuilder(tweet);
+
+        var marker = new google.maps.Marker({
+          position: { lat: parseFloat(tweet.lat), lng: parseFloat(tweet.lng) },
+          icon: (tweet.col == "posted") ? "./images/marker-pink.png" : "./images/marker-blue.png"
+        })
+
+        marker.addListener('click', function () {
+          showOneTweet(markers.indexOf(marker));
+        });
+
+        return marker;
+
+      })
+
+      var markerCluster = new MarkerClusterer(map, markers,
+        { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
+
+    }
+
+    var items=['food','water','medicines','first-aid'];
+
+    function cardbuilder(tweet) {
+
+      var msg = tweet.tw_msg;
+
+      var requirements=[];
+
+      for(var key in items){
+        if(msg.includes(items[key]))
+          requirements.push(items[key]);
+      }
+
+      var a = "<div class='card " + (tweet.status == "-1" ? "pink-card" : "blue-card") +
+
+        "' style='border-color:rgb(" + (255 - (255 * parseFloat(tweet.status))) + "," + 255 * parseFloat(tweet.status) + ",0)' onclick='showOneTweet(" + tweets.indexOf(tweet) + ")'> " +
+
+        tweet.date + " • " + tweet.location_words +
+
+        "<hr color='#cccccc'><i>" + tweet.tw_msg + "<br>";
+
+      if(requirements.length!=0)
+          a+="<br><i class='amber-text material-icons'>warning</i>"
+
+      for(var key in requirements)
+          a+=requirements[key]+", ";
+
+      a+=  "</ul></i>" +
+
+        "</div>"
+
+      document.getElementById("cards-holder").innerHTML += a;
+    }
+
+    function showOneTweet(n) {
+      $("#tweets-container").animate({
+        opacity: '0'
+      });
+      $("#one-tweet").animate({
+        right: '0px'
+      });
+
+      var tweet=tweets[n];
+      tweets = tweets.sort((a,b) => parseFloat(a.status) < parseFloat(b.status))
+
+       map.panTo(markers[n].getPosition());
+       map.setZoom(15);
+
+      document.getElementById("tweet-date").innerHTML = tweet.date + " • " + tweet.location_words;
+
+      document.getElementById("image").src=null;
+      document.getElementById("image").src=tweet.img_video_url;
+
+      document.getElementById("tweet-msg").innerHTML = "\"" + tweet.tw_msg + "\"";
+
+    }
+
+    function showAllTweets() {
+
+      $("#tweets-container").animate({
+        opacity: '1'
+      });
+      $("#one-tweet").animate({
+        right: '-400px'
+      });
+    }
+  </script>
+
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD37UizytAiQ7AefQr-4WqfcWFa6FZajw0&callback=initMap">
+
+  </script>
+</body>
+
+</html>
